@@ -8,18 +8,18 @@ usando alocação dinâmica de memória)*/
 
 double **formaMatriz (int linha, int coluna){
     int i, j;
-    float **m;
+    double **m;
 
-    m = (float **) malloc(linha * sizeof(float *));
+    m = (double **) malloc(linha * sizeof(double *));
 
     for(i=0; i<linha; i++){
-        *(m+i) = (float *) malloc(coluna * sizeof(float));
+        *(m+i) = (double *) malloc(coluna * sizeof(double));
     }
 
     for(i=0; i<linha; i++){
         for(j=0; j<coluna; j++){
             printf("[%d][%d]= ", i, j);
-            scanf("%f", (*(m+i)+j));
+            scanf("%lf", (*(m+i)+j));
         }
     }
 
@@ -28,9 +28,9 @@ double **formaMatriz (int linha, int coluna){
 
 int main(){
     int linha, coluna, i, j;
-    float **m1;
-    float **m2;
-    float **matrizSoma;
+    double **m1;
+    double **m2;
+    double **matrizSoma;
 
     printf("Digite, respectivamente, a quantidade de linhas e colunas das matrizes: ");
     scanf("%d %d", &linha, &coluna);
@@ -42,10 +42,10 @@ int main(){
     printf("MATRIZ 2:\n");
     m2 = formaMatriz(linha, coluna);
 
-    matrizSoma = (float**) malloc(linha * sizeof(float*));
+    matrizSoma = (double**) malloc(linha * sizeof(double*));
     printf("\n\nMATRIZ SOMA: \n");
     for(i=0; i<linha; i++){
-        *(matrizSoma+i) = (float*) malloc (coluna * sizeof(float));
+        *(matrizSoma+i) = (double*) malloc (coluna * sizeof(double));
     }
 
     for(i=0; i<linha; i++){
@@ -56,7 +56,7 @@ int main(){
 
     for(i=0; i<linha; i++){
         for(j=0; j<coluna; j++){
-            printf("%.1f ", *(*(matrizSoma+i)+j));
+            printf("%.1lf ", *(*(matrizSoma+i)+j));
         }
         printf("\n");
     }
