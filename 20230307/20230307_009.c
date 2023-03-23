@@ -5,11 +5,13 @@ Utilize o retorno de um vetor para retornar os índices e um ponteiro para guard
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void busca(char palavra[100], char letra){
 	int i, *v, cont=0, tamanho;
 	
-	tamanho = sizeof(palavra)-1;
+	tamanho = strlen(palavra);
+    printf("Teste= %d\n", tamanho);
 	v = (int *) malloc(tamanho * sizeof(int));
 	for(i=0; i<=tamanho; i++){
 		if(palavra[i] == letra){
@@ -17,7 +19,7 @@ void busca(char palavra[100], char letra){
 			cont++;
 		}
 	}
-	
+	printf("Tamanho= %d\n", cont);
 	for(i=0; i<cont; i++){
 		printf("%d ", *(v+i));
 	}
