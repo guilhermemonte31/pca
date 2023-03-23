@@ -1,6 +1,6 @@
 /*20230307_004 Crie um programa que contenha um array de inteiros contendo 8 elementos. 
-Utilizando apenas aritmética de ponteiros, leia esse array do teclado e imprima o dobro de cada valor lido.
-a)Imprimir o endereço das posições contendo valores pares*/
+Utilizando apenas aritmÃ©tica de ponteiros, leia esse array do teclado e imprima o dobro de cada valor lido.
+a)Imprimir o endereÃ§o das posiÃ§Ãµes contendo valores pares*/
 #include <stdio.h>
 
 
@@ -13,7 +13,7 @@ int main(){
 	}
 	
 	for(i=0; i<8;i++){
-		printf("%d ", x[i]*2);
+		printf("%d ", (*(x+i)*2));
 	}
 	printf("\n");
 	
