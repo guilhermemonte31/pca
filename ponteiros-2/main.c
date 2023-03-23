@@ -50,5 +50,8 @@ int main()
     }
 
     mediaDesvio(notas, alunos, &md, &dp);
+    printf("\n\n");
+    
+    printf("FINAL: MEDIA= %.1f \nDESVIO PADRAO= %.1f", md, dp);
     return 0;
 }
