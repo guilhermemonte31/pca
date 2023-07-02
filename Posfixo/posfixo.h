@@ -4,7 +4,6 @@
 
 typedef struct aux{
     char expressao;
-    float teste;
     struct aux *proximo;
 }Elemento;
 
