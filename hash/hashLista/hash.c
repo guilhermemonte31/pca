@@ -59,7 +59,7 @@ void exibeHash(tabelaHash tabela){
             teste = tabela[i];
             printf("\nPaciente: %d", i);
             while(teste!= NULL){
-                printf(" Nome: %s --->", tabela[i]->paciente.nome);
+                printf(" Nome: %s --->", teste->paciente.nome);
                 teste = teste->proximo;
             }
             printf("NULL");
