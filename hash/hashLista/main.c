@@ -6,21 +6,22 @@
 int main(){
     tabelaHash tabela;
     inicializaHash(tabela);
+    
     Paciente p1;
-    p1.codigo =  78;
+    p1.codigo =  1291;
     p1.cpf = 1234;
     p1.idade = 20;
-    p1.nome = "guilherme";
+    p1.nome = "cristiano";
     inserir(tabela, p1);
     
 
 
     
     Paciente p2;
-    p2.codigo =  34;
+    p2.codigo =  1089;
     p2.cpf = 12224;
     p2.idade = 25;
-    p2.nome = "cristiano";
+    p2.nome = "guilherme";
     inserir(tabela, p2);
 
     
@@ -32,9 +33,15 @@ int main(){
     inserir(tabela, p3);
     exibeHash(tabela);
 
-    int codigoDeBusca;
-    printf("\nQual codigo vc deseja buscar? ");
-    scanf("%d", &codigoDeBusca);
-    int b = busca(tabela, codigoDeBusca);
-    printf("\n\nBusca %d Paciente= %s posicao= %d",codigoDeBusca,tabela[b]->paciente.nome, b);
+
+    Paciente *pr;
+    pr = busca(tabela, 45);
+    printf("\n\nBusca %s",pr->nome);
+
+
+    // int codigoExcluir;
+    // printf("\n\nDigite o codigo do paciente que deseja excluir: ");
+    // scanf("%d", &codigoExcluir);
+    // excluir(tabela, codigoExcluir);
+    // exibeHash(tabela);
 }

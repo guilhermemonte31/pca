@@ -7,6 +7,7 @@ typedef struct{
     int idade;
     int cpf;
     int codigo;
+    int disponivel;
 }Paciente;
 
 

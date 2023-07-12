@@ -11,15 +11,13 @@ void inicializaHash(tabelaHash tabela){
     }
 }
 int funcao_hash(int cod){
-    int i = cod % max;
-    return i;
+    return (cod%max);
 }
 
 int inserir(tabelaHash tabela, Paciente paciente){
-    printf("Teste inserir\n");
     int p = funcao_hash(paciente.codigo); //pega oq seria a posicao a inserir esse paciente
     Elemento *ant = NULL;
-    Elemento *e = tabela[p];//faz o e apontar pra posicao p da tabela
+    Elemento *e = tabela[p];//faz o e apontar pra posicao p da tabela7printf("")
 
     while(e != NULL){ // se ela ja estiver ocupada
         if(e->paciente.codigo == paciente.codigo){ // e se for o mesmo codigo da do paciente em si
@@ -29,7 +27,7 @@ int inserir(tabelaHash tabela, Paciente paciente){
         e= e->proximo;//percorre até achar um espaço valido pra inserir
     }
     if(e ==NULL){ //quando achar uma posicao valida
-    e = malloc(sizeof(Elemento));
+        e = malloc(sizeof(Elemento));
         e->paciente = paciente; // coloca paciente no e
         e->proximo = NULL;
         if(ant == NULL){// anterior do elemento e
@@ -41,27 +39,54 @@ int inserir(tabelaHash tabela, Paciente paciente){
     return 1;
 }
 
-int busca(tabelaHash tabela, int codigo){
+Paciente * busca(tabelaHash tabela, int codigo){
     int p = funcao_hash(codigo);
-    while(tabela[p] != NULL){
-        if(tabela[p]->paciente.codigo == codigo){
-            return p;
+    Elemento *e = tabela[p];
+    while(e != NULL){
+        if(e->paciente.codigo == codigo){
+            return &e->paciente;
         }
-        p = (p+1)% max;
+        e = e->proximo;
     }
-    return -1;
+    return NULL;
 }
 
 void exibeHash(tabelaHash tabela){
     int i;
     Elemento *teste;
     for(i=0; i<max; i++){
-        teste = tabela[i];
-        if(teste != NULL){
-            printf("\nPaciente: %s", teste->paciente.nome);
-            printf("\nIdade: %d", teste->paciente.idade);
-            printf("\nCodigo: %d", teste->paciente.codigo);
-            printf("\nCPF: %d\n", teste->paciente.cpf);
+        if(tabela[i] != NULL){
+            teste = tabela[i];
+            printf("\nPaciente: %d", i);
+            while(teste!= NULL){
+                printf(" Nome: %s --->", tabela[i]->paciente.nome);
+                teste = teste->proximo;
+            }
+            printf("NULL");
+        }else{
+            printf("\nPaciente: %d NULL", i);
         }
     }
+}
+
+int excluir(tabelaHash tabela, int codigo){
+    int h =funcao_hash(codigo);
+    Elemento *e = tabela[h];
+    Elemento *ant = NULL;
+
+    while(e && e->paciente.codigo != codigo){
+        ant = e;
+        e = e->proximo;
+    }
+    if(e){
+        if(!ant){
+            tabela[h] = e->proximo;
+        }else{
+            ant->proximo = e->proximo;
+            free(e);
+            return 1;
+        }
+    }
+    return 0;
+    
 }

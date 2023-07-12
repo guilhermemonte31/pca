@@ -8,6 +8,7 @@ void inicializaHash(tabelaHash tabela){
     int i;
     for(i=0; i<max; i++){
         tabela[i] = NULL;
+        tabela[i]->disponivel = 1;
     }
 }
 int funcao_hash(int cod){
@@ -17,9 +18,11 @@ int funcao_hash(int cod){
 
 int inserir(tabelaHash tabela, Paciente paciente){
     int p = funcao_hash(paciente.codigo);
-    if(tabela[p] == NULL){
+
+    if(tabela[p] == NULL && tabela[p]->disponivel == 1){
         tabela[p] = malloc(sizeof(Paciente));
         *(tabela[p]) = paciente;
+        tabela[p]->disponivel = 0;
     }else{
         while(tabela[p] != NULL){
             p++;

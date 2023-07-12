@@ -21,8 +21,9 @@ typedef Elemento* tabelaHash[max];
 void inicializaHash(tabelaHash tabela);
 int funcao_hash(int cod);
 int inserir(tabelaHash tabela, Paciente paciente);
-int busca(tabelaHash tabela, int codigo);
+Paciente * busca(tabelaHash tabela, int codigo);
 void exibeHash(tabelaHash tabela);
+int excluir(tabelaHash tabela, int codigo);
 
 
 #endif
