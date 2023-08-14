@@ -6,32 +6,39 @@
 
 // Declaração da estrutura
 typedef struct aux {
-  int item[MAX + 1];
-  int count;
-  struct aux* linker[MAX + 1];
-}BTreeNode;
+    int item[MAX + 1];
+    int cont;
+    struct aux* linker[MAX + 1];
+}No;
 
 typedef struct{
-    BTreeNode *root;
-}Tree;
+    No *raiz;
+}Arvore;
 
 
 // Declaração das funções
-void inicializeTree(Tree *t);
-BTreeNode *createNode(int item,BTreeNode *child);
-void addValToNode(int item, int pos,BTreeNode *node, BTreeNode *child);
-void splitNode(int item, int *pval, int pos, BTreeNode *node, BTreeNode *child, BTreeNode **newNode);
-int setValueInNode(int item, int *pval, BTreeNode *node, BTreeNode **child);
-void insertion(BTreeNode *root, int item);
-void copySuccessor(BTreeNode *myNode, int pos);
-void removeVal(BTreeNode *myNode, int pos);
-void rightShift(BTreeNode *myNode, int pos);
-void leftShift(BTreeNode *myNode, int pos);
-void mergeNodes(BTreeNode *myNode, int pos);
-void adjustNode(BTreeNode *myNode, int pos);
-int delValFromNode(int item, BTreeNode *myNode);
-void delete(int item, BTreeNode *myNode, BTreeNode *root);
-void searching(int item, int *pos, BTreeNode *myNode);
-void traversal( BTreeNode *myNode);
+
+void inicializarArvore(Arvore *t);
+No *criarNo(Arvore *t, int item, No *filho);
+void inserir(Arvore *t, int item);
+int definirValorNo(int item, int *pval, No *node, No **filho);
+void addValorNo(int item, int pos, No *node, No *filho);
+void split(int item, int *pval, int pos, No *node, No *filho, No **newNode);
+int buscarNaAvore(int item, int *pos, No *no);
+int busca(Arvore *t, int item);
+void imprimir( No *no);
+
+
+
+void copySuccessor(No *no, int pos);
+void removeVal(No *no, int pos);
+void rightShift(No *no, int pos);
+void leftShift(No *no, int pos);
+void mergeNodes(No *no, int pos);
+void adjustNode(No *no, int pos);
+int delValFromNode(int item, No *no);
+void delete(int item, No *no, No *raiz);
+void searching(int item, int *pos, No *no);
+void traversal( No *no);
 
 #endif
