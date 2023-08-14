@@ -1,7 +1,9 @@
 #ifndef ARVOREB_H
 #define ARVOREB_H
 
-#define MAX 2 // árvore b de ordem 3
+
+// árvore b de ordem 3
+#define MAX 2 
 #define MIN 1
 
 // Declaração da estrutura
