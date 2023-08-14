@@ -4,284 +4,303 @@
 
 // Implementação das funções definidas em arvoreb.h
 
-void inicializeTree(Tree *t){
-    t->root = NULL;
+void inicializarArvore(Arvore *t){
+    t = malloc(sizeof(Arvore));
+    t->raiz = NULL;
 }
 
-BTreeNode *createNode(int item, BTreeNode *child) {
-  BTreeNode *newNode;
-  newNode = malloc(sizeof(BTreeNode));
-  newNode->item[1] = item;
-  newNode->count = 1;
-  newNode->linker[0] = NULL;
-  newNode->linker[1] = child;
-  return newNode;
+No *criarNo(Arvore *t, int item, No *filho) { ///8, null
+    No *novoNo;
+    novoNo = malloc(sizeof(No));
+    novoNo->item[1] = item;
+    novoNo->cont = 1;
+    novoNo->linker[0] = t->raiz;
+    novoNo->linker[1] = filho;
+    return novoNo;
 }
 
-void addValToNode(int item, int pos, BTreeNode *node, BTreeNode *child) {
-  int j = node->count;
-  while (j > pos) {
-    node->item[j + 1] = node->item[j];
-    node->linker[j + 1] = node->linker[j];
-    j--;
-  }
-  node->item[j + 1] = item;
-  node->linker[j + 1] = child;
-  node->count++;
+
+
+
+//FUNÇÕES PARA INSERIR
+void inserir(Arvore *t, int item) {
+    int flag, i;
+    No *filho;
+
+    flag = definirValorNo(item, &i, t->raiz, &filho); 
+    if (flag)
+        t->raiz = criarNo(t, i, filho); 
 }
 
-void splitNode(int item, int *pval, int pos, BTreeNode *node, BTreeNode *child, BTreeNode **newNode) {
-  int median, j;
-
-  if (pos > MIN)
-    median = MIN + 1;
-  else
-    median = MIN;
-
-  *newNode = (BTreeNode *)malloc(sizeof(BTreeNode));
-  j = median + 1;
-  while (j <= MAX) {
-    (*newNode)->item[j - median] = node->item[j];
-    (*newNode)->linker[j - median] = node->linker[j];
-    j++;
-  }
-  node->count = median;
-  (*newNode)->count = MAX - median;
-
-  if (pos <= MIN) {
-    addValToNode(item, pos, node, child);
-  } else {
-    addValToNode(item, pos - median, *newNode, child);
-  }
-  *pval = node->item[node->count];
-  (*newNode)->linker[0] = node->linker[node->count];
-  node->count--;
-}
-
-int setValueInNode(int item, int *pval, BTreeNode *node, BTreeNode **child) {
-  int pos;
-  if (!node) {
-    *pval = item;
-    *child = NULL;
-    return 1;
-  }
-
-  if (item < node->item[1]) {
-    pos = 0;
-  } else {
-    for (pos = node->count; (item < node->item[pos] && pos > 1); pos--);
-    if (item == node->item[pos]) {
-      printf("Duplicates not allowed\n");
-      return 0;
+int definirValorNo(int item, int *pval, No *no, No **filho) { 
+    int pos;
+    if (no == NULL) {
+        *pval = item;
+        *filho = NULL;
+        return 1;
     }
-  }
-  if (setValueInNode(item, pval, node->linker[pos], child)) {
-    if (node->count < MAX) {
-      addValToNode(*pval, pos, node, *child);
+
+    if (item < no->item[1]) {
+        pos = 0;
     } else {
-      splitNode(*pval, pval, pos, node, *child, child);
-      return 1;
+        for (pos = no->cont; (item < no->item[pos] && pos > 1); pos--);
+        if (item == no->item[pos]) {
+            printf("Duplicates not allowed\n");
+            return 0;
+        }
     }
-  }
-  return 0;
+    if (definirValorNo(item, pval, no->linker[pos], filho) == 1) {
+        if (no->cont < MAX) {
+            addValorNo(*pval, pos, no, *filho);
+        } else {
+            split(*pval, pval, pos, no, *filho, filho);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-void insertion(BTreeNode *root, int item) {
-  int flag, i;
-  BTreeNode *child;
-
-  flag = setValueInNode(item, &i, root, &child);
-  if (flag)
-    root = createNode(i, child);
-}
-
-void copySuccessor(BTreeNode *myNode, int pos) {
-    BTreeNode *dummy;
-    dummy = myNode->linker[pos];
-
-    for (; dummy->linker[0] != NULL;)
-    dummy = dummy->linker[0];
-  myNode->item[pos] = dummy->item[1];
-}
-
-void removeVal( BTreeNode *myNode, int pos) {
-  int i = pos + 1;
-  while (i <= myNode->count) {
-    myNode->item[i - 1] = myNode->item[i];
-    myNode->linker[i - 1] = myNode->linker[i];
-    i++;
-  }
-  myNode->count--;
-}
-
-void rightShift( BTreeNode *myNode, int pos) {
-    BTreeNode *x = myNode->linker[pos];
-    int j = x->count;
-
-    while (j > 0) {
-        x->item[j + 1] = x->item[j];
-        x->linker[j + 1] = x->linker[j];
+void addValorNo(int item, int pos, No *no, No *filho) {
+    int j = no->cont;
+    while (j > pos) {
+        no->item[j + 1] = no->item[j];
+        no->linker[j + 1] = no->linker[j];
         j--;
     }
-    x->item[1] = myNode->item[pos];
-    x->linker[1] = x->linker[0];
-    x->count++;
-
-    x = myNode->linker[pos - 1];
-    myNode->item[pos] = x->item[x->count];
-    myNode->linker[pos] = x->linker[x->count];
-    x->count--;
+    no->item[j + 1] = item;
+    no->linker[j + 1] = filho;
+    no->cont++;
 }
 
-void leftShift( BTreeNode *myNode, int pos) {
-    int j = 1;
-    BTreeNode *x = myNode->linker[pos - 1];
+void split(int item, int *pval, int pos, No *no, No *filho, No **novoNo) {
+    int median, j;
 
-    x->count++;
-    x->item[x->count] = myNode->item[pos];
-    x->linker[x->count] = myNode->linker[pos]->linker[0];
+    if (pos > MIN){
+        median = MIN + 1;
+    }else{
+        median = MIN;
+    }
 
-    x = myNode->linker[pos];
-    myNode->item[pos] = x->item[1];
-    x->linker[0] = x->linker[1];
-    x->count--;
-
-    while (j <= x->count) {
-        x->item[j] = x->item[j + 1];
-        x->linker[j] = x->linker[j + 1];
+    *novoNo = (No *)malloc(sizeof(No));
+    j = median + 1;
+    while (j <= MAX) {
+        (*novoNo)->item[j - median] = no->item[j];
+        (*novoNo)->linker[j - median] = no->linker[j];
         j++;
     }
-}
-
-void mergeNodes(BTreeNode *myNode, int pos) {
-  int j = 1;
-    BTreeNode *x1 = myNode->linker[pos], *x2 = myNode->linker[pos - 1];
-
-  x2->count++;
-  x2->item[x2->count] = myNode->item[pos];
-  x2->linker[x2->count] = myNode->linker[0];
-
-  while (j <= x1->count) {
-    x2->count++;
-    x2->item[x2->count] = x1->item[j];
-    x2->linker[x2->count] = x1->linker[j];
-    j++;
-  }
-
-  j = pos;
-  while (j < myNode->count) {
-    myNode->item[j] = myNode->item[j + 1];
-    myNode->linker[j] = myNode->linker[j + 1];
-    j++;
-  }
-  myNode->count--;
-  free(x1);
-}
-
-void adjustNode(BTreeNode *myNode, int pos) {
-  if (!pos) {
-    if (myNode->linker[1]->count > MIN) {
-      leftShift(myNode, 1);
+    no->cont = median;
+    (*novoNo)->cont = MAX - median;
+    if (pos <= MIN) {
+        addValorNo(item, pos, no, filho); 
     } else {
-      mergeNodes(myNode, 1);
+        addValorNo(item, pos - median, *novoNo, filho);
     }
-  } else {
-    if (myNode->count != pos) {
-      if (myNode->linker[pos - 1]->count > MIN) {
-        rightShift(myNode, pos);
-      } else {
-        if (myNode->linker[pos + 1]->count > MIN) {
-          leftShift(myNode, pos + 1);
-        } else {
-          mergeNodes(myNode, pos);
+    *pval = no->item[no->cont];
+    (*novoNo)->linker[0] = no->linker[no->cont];
+    no->cont--;
+}
+
+
+
+//FUNÇÃO DE BUSCA
+int busca(Arvore *t, int item) {
+    int i;
+    return buscarNaAvore(item, &i, t->raiz);
+}
+
+
+int buscarNaAvore(int item, int *pos, No *no){
+    if (!no) {
+        return 0;
+    }
+    if (item < no->item[1]) {
+        *pos = 0;
+    } else {
+    for (*pos = no->cont; (item < no->item[*pos] && *pos > 1); (*pos)--);
+        if (item == no->item[*pos]) {
+            return 1;
         }
-      }
-    } else {
-      if (myNode->linker[pos - 1]->count > MIN)
-        rightShift(myNode, pos);
-      else
-        mergeNodes(myNode, pos);
     }
-  }
+    return buscarNaAvore(item, pos, no->linker[*pos]);
 }
 
-int delValFromNode(int item, BTreeNode *myNode) {
-  int pos, flag = 0;
-  if (myNode) {
-    if (item < myNode->item[1]) {
-      pos = 0;
-      flag = 0;
-    } else {
-      for (pos = myNode->count; (item < myNode->item[pos] && pos > 1); pos--) {
-        if (item == myNode->item[pos]) {
-          flag = 1;
-        } else {
-          flag = 0;
+
+
+//FUNÇÃO PARA IMPRIMIR
+void imprimir( No *no) {
+    int i;
+    if (no) {
+        for (i = 0; i < no->cont; i++) {
+            imprimir(no->linker[i]);
+            printf("%d ", no->item[i + 1]);
         }
-      }
+        imprimir(no->linker[i]);
     }
-    if (flag) {
-      if (myNode->linker[pos - 1]) {
-        copySuccessor(myNode, pos);
-        flag = delValFromNode(myNode->item[pos], myNode->linker[pos]);
-        if (flag == 0) {
-          printf("Given data is not present in B-Tree\n");
-        }
-      } else {
-        removeVal(myNode, pos);
-      }
-    } else {
-      flag = delValFromNode(item, myNode->linker[pos]);
-    }
-    if (myNode->linker[pos]) {
-      if (myNode->linker[pos]->count < MIN)
-        adjustNode(myNode, pos);
-    }
-  }
-  return flag;
 }
 
-void delete(int item, BTreeNode *myNode, BTreeNode *root) {
-  BTreeNode *tmp;
-  if (!delValFromNode(item, myNode)) {
-    printf("Not present\n");
-    return;
-  } else {
-    if (myNode->count == 0) {
-      tmp = myNode;
-      myNode = myNode->linker[0];
-      free(tmp);
-    }
-  }
-  root = myNode;
-  return;
-}
 
-void searching(int item, int *pos, BTreeNode *myNode) {
-  if (!myNode) {
-    return;
-  }
 
-  if (item < myNode->item[1]) {
-    *pos = 0;
-  } else {
-    for (*pos = myNode->count; (item < myNode->item[*pos] && *pos > 1); (*pos)--);
-    if (item == myNode->item[*pos]) {
-      printf("%d present in B-tree", item);
-      return;
-    }
-  }
-  searching(item, pos, myNode->linker[*pos]);
-  return;
-}
 
-void traversal( BTreeNode *myNode) {
-  int i;
-  if (myNode) {
-    for (i = 0; i < myNode->count; i++) {
-      traversal(myNode->linker[i]);
-      printf("%d ", myNode->item[i + 1]);
-    }
-    traversal(myNode->linker[i]);
-  }
-}
+// //FUNÇÕES PARA EXCLUIR
+// void copySuccessor(No *no, int pos) {
+//     No *dummy;
+//     dummy = no->linker[pos];
+
+//     for (; dummy->linker[0] != NULL;){
+//         dummy = dummy->linker[0];
+//         no->item[pos] = dummy->item[1];
+//     }
+// }
+
+// void removeVal( No *no, int pos) {
+//     int i = pos + 1;
+//     while (i <= no->cont) {
+//         no->item[i - 1] = no->item[i];
+//         no->linker[i - 1] = no->linker[i];
+//         i++;
+//     }
+//     no->cont--;
+// }
+
+// void rightShift( No *no, int pos) {
+//     No *x = no->linker[pos];
+//     int j = x->cont;
+
+//     while (j > 0) {
+//         x->item[j + 1] = x->item[j];
+//         x->linker[j + 1] = x->linker[j];
+//         j--;
+//     }
+//     x->item[1] = no->item[pos];
+//     x->linker[1] = x->linker[0];
+//     x->cont++;
+
+//     x = no->linker[pos - 1];
+//     no->item[pos] = x->item[x->cont];
+//     no->linker[pos] = x->linker[x->cont];
+//     x->cont--;
+// }
+
+// void leftShift( No *no, int pos) {
+//     int j = 1;
+//     No *x = no->linker[pos - 1];
+
+//     x->cont++;
+//     x->item[x->cont] = no->item[pos];
+//     x->linker[x->cont] = no->linker[pos]->linker[0];
+
+//     x = no->linker[pos];
+//     no->item[pos] = x->item[1];
+//     x->linker[0] = x->linker[1];
+//     x->cont--;
+
+//     while (j <= x->cont) {
+//         x->item[j] = x->item[j + 1];
+//         x->linker[j] = x->linker[j + 1];
+//         j++;
+//     }
+// }
+
+// void mergenos(No *no, int pos) {
+//     int j = 1;
+//     No *x1 = no->linker[pos], *x2 = no->linker[pos - 1];
+
+//     x2->cont++;
+//     x2->item[x2->cont] = no->item[pos];
+//     x2->linker[x2->cont] = no->linker[0];
+
+//     while (j <= x1->cont) {
+//         x2->cont++;
+//         x2->item[x2->cont] = x1->item[j];
+//         x2->linker[x2->cont] = x1->linker[j];
+//         j++;
+//     }
+
+//     j = pos;
+//     while (j < no->cont) {
+//         no->item[j] = no->item[j + 1];
+//         no->linker[j] = no->linker[j + 1];
+//         j++;
+//     }
+//     no->cont--;
+//     free(x1);
+// }
+
+// void adjustno(No *no, int pos) {
+//     if (!pos) {
+//     if (no->linker[1]->cont > MIN) {
+//         leftShift(no, 1);
+//     } else {
+//         mergenos(no, 1);
+//     }
+//     } else {
+//     if (no->cont != pos) {
+//         if (no->linker[pos - 1]->cont > MIN) {
+//             rightShift(no, pos);
+//         } else {
+//             if (no->linker[pos + 1]->cont > MIN) {
+//                 leftShift(no, pos + 1);
+//             } else {
+//                 mergenos(no, pos);
+//             }
+//         }
+//     } else {
+//         if (no->linker[pos - 1]->cont > MIN)
+//             rightShift(no, pos);
+//         else
+//             mergenos(no, pos);
+//     }
+//     }
+// }
+
+// int delValFromno(int item, No *no) {
+//     int pos, flag = 0;
+//     if (no) {
+//     if (item < no->item[1]) {
+//         pos = 0;
+//         flag = 0;
+//     } else {
+//         for (pos = no->cont; (item < no->item[pos] && pos > 1); pos--) {
+//             if (item == no->item[pos]) {
+//                 flag = 1;
+//             } else {
+//                 flag = 0;
+//             }
+//         }
+//     }
+//     if (flag) {
+//         if (no->linker[pos - 1]) {
+//             copySuccessor(no, pos);
+//             flag = delValFromno(no->item[pos], no->linker[pos]);
+//             if (flag == 0) {
+//                 printf("Given data is not present in B-Arvore\n");
+//             }
+//             } else {
+//                 removeVal(no, pos);
+//             }
+//     } else {
+//         flag = delValFromno(item, no->linker[pos]);
+//     }
+//     if (no->linker[pos]) {
+//         if (no->linker[pos]->cont < MIN)
+//         adjustno(no, pos);
+//     }
+//     }
+//     return flag;
+// }
+
+// void delete(int item, No *no, No *raiz) {
+//     No *tmp;
+//     if (!delValFromno(item, no)) {
+//         printf("Not present\n");
+//         return;
+//     } else {
+//     if (no->cont == 0) {
+//         tmp = no;
+//         no = no->linker[0];
+//         free(tmp);
+//     }
+//     }
+//     raiz = no;
+//     return;
+// }
