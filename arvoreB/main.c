@@ -1,26 +1,36 @@
 #include "arvoreb.h"
 #include <stdio.h>
+#include <stdlib.h>
+
 
 int main() {
-  int item, ch;
-  Tree *t;
-  inicializeTree(t);
-  insertion(t->root, 8);
-  insertion(t->root, 9);
-  insertion(t->root, 10);
-  insertion(t->root, 11);
-  insertion(t->root, 15);
-  insertion(t->root, 16);
-  insertion(t->root, 17);
-  insertion(t->root, 18);
-  insertion(t->root, 20);
-  insertion(t->root, 23);
-  traversal(t->root);
-  printf("\nprintando %d", t->root->item);
+    int item, i;
+    Arvore *t;
+    inicializarArvore(t);
+    inserir(t, 1);
+    inserir(t, 2);
+    inserir(t, 3);
+    inserir(t, 12);
+    inserir(t, 13);
+    inserir(t, 15);
+    inserir(t, 11);
+    inserir(t, 28);
+    inserir(t, 21);
+    inserir(t, 7);
+    imprimir(t->raiz);
+    printf("\n");
+    int num = 8;
+    int chave = busca(t, num);
+    if(chave == 1) printf("Valor %d encontrado.", num);
+    else printf("Valor %d nao encontrado.", num);
 
-  //delete(20, t->root);
-  //printf("\n");
-  //traversal(t->root);
-
-  return 0;
+    return 0;
 }
+
+
+
+    // printf("\n %d ", i);
+    
+    //delete(20, t->raiz);
+    //printf("\n");
+    //traversal(t->raiz);
